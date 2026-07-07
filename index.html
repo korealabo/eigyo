@@ -88,7 +88,7 @@ const {
   useEffect,
   useMemo
 } = React;
-const SHARED_BIN_ID = "6a4cf64ff5f4af5e296c2a59";
+const SHARED_BIN_ID = "6a4cf5d6f5f4af5e296c27fe";
 const JSONBIN_KEY = "$2a$10$vZ7VMUUZqAKtlQ9fqrBcmOIICIFZSZqb29oK445wVRcbZ9m/FNqKW";
 const JSONBIN_BASE = "https://api.jsonbin.io/v3";
 const ADMIN_PASSWORD = "6332";
@@ -301,10 +301,8 @@ function ReportForm({
     companions: "",
     meetingType: "対面（顧客先）",
     visitPlace: "",
-    activitySummary: "",
     content: "",
     customerReaction: "",
-    result: "",
     issues: "",
     achievements: "",
     nextAction: "",
@@ -328,6 +326,7 @@ function ReportForm({
     if (!f.company.trim()) e.company = "訪問先会社名を入力してください";
     if (!f.visitDate) e.visitDate = "訪問日を入力してください";
     if (!f.content.trim()) e.content = "商談内容を入力してください";
+    if (!f.nextAction.trim()) e.nextAction = "次回アクションを入力してください";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -487,7 +486,7 @@ function ReportForm({
     className: "req"
   }, "*")), React.createElement("div", null, React.createElement("input", {
     type: "text",
-    placeholder: "例：関西エアポート株式会社",
+    placeholder: "例：ドン・キホーテ",
     value: f.company,
     onChange: e => set("company", e.target.value)
   }), errors.company && React.createElement("p", {
@@ -544,43 +543,7 @@ function ReportForm({
     className: "card"
   }, React.createElement("div", {
     className: "card-title"
-  }, "２．本日の営業活動"), React.createElement("div", {
-    className: "row",
-    style: {
-      alignItems: "start"
-    }
-  }, React.createElement("span", {
-    className: "row-label"
-  }, "活動内容"), React.createElement("textarea", {
-    placeholder: "例：GTFご紹介、関空における免税事業の現状確認",
-    value: f.activitySummary,
-    onChange: e => set("activitySummary", e.target.value),
-    style: {
-      width: "100%",
-      minHeight: 60,
-      resize: "vertical"
-    }
-  })), React.createElement("div", {
-    className: "row",
-    style: {
-      alignItems: "start"
-    }
-  }, React.createElement("span", {
-    className: "row-label"
-  }, "結果"), React.createElement("textarea", {
-    placeholder: "商談の結果や決定事項",
-    value: f.result,
-    onChange: e => set("result", e.target.value),
-    style: {
-      width: "100%",
-      minHeight: 60,
-      resize: "vertical"
-    }
-  }))), React.createElement("div", {
-    className: "card"
-  }, React.createElement("div", {
-    className: "card-title"
-  }, "３．商談内容"), React.createElement("div", {
+  }, "２．商談内容"), React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start"
@@ -636,7 +599,7 @@ function ReportForm({
     className: "card"
   }, React.createElement("div", {
     className: "card-title"
-  }, "４．本日の成果・今後の対応"), React.createElement("div", {
+  }, "３．本日の成果・今後の対応"), React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start"
@@ -659,7 +622,13 @@ function ReportForm({
     }
   }, React.createElement("span", {
     className: "row-label"
-  }, "次回アクション"), React.createElement("textarea", {
+  }, "次回アクション ", React.createElement("span", {
+    className: "req"
+  }, "*")), React.createElement("div", {
+    style: {
+      width: "100%"
+    }
+  }, React.createElement("textarea", {
     placeholder: "次回までに行うべきこと・約束した内容",
     value: f.nextAction,
     onChange: e => set("nextAction", e.target.value),
@@ -668,7 +637,9 @@ function ReportForm({
       minHeight: 70,
       resize: "vertical"
     }
-  })), React.createElement("div", {
+  }), errors.nextAction && React.createElement("p", {
+    className: "err"
+  }, errors.nextAction))), React.createElement("div", {
     className: "row"
   }, React.createElement("span", {
     className: "row-label"
@@ -683,15 +654,15 @@ function ReportForm({
     className: "card"
   }, React.createElement("div", {
     className: "card-title"
-  }, "５．競合・市場情報"), React.createElement("div", {
+  }, "４．競合・市場情報・その他共有事項"), React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start"
     }
   }, React.createElement("span", {
     className: "row-label"
-  }, "競合・市場情報"), React.createElement("textarea", {
-    placeholder: "競合他社の情報、市場動向など",
+  }, "共有事項"), React.createElement("textarea", {
+    placeholder: "競合他社の情報、市場動向、その他社内で共有したい事項など",
     value: f.marketInfo,
     onChange: e => set("marketInfo", e.target.value),
     style: {
@@ -857,39 +828,11 @@ function Detail({
     className: "row-label"
   }, "温度感"), React.createElement("span", null, React.createElement(TempBadge, {
     value: report.temperature
-  })))), (report.activitySummary || report.result) && React.createElement("div", {
+  })))), React.createElement("div", {
     className: "card"
   }, React.createElement("div", {
     className: "card-title"
-  }, "２．本日の営業活動"), report.activitySummary && React.createElement("div", {
-    className: "row",
-    style: {
-      alignItems: "start"
-    }
-  }, React.createElement("span", {
-    className: "row-label"
-  }, "活動内容"), React.createElement("span", {
-    style: {
-      whiteSpace: "pre-wrap",
-      lineHeight: 1.8
-    }
-  }, report.activitySummary)), report.result && React.createElement("div", {
-    className: "row",
-    style: {
-      alignItems: "start"
-    }
-  }, React.createElement("span", {
-    className: "row-label"
-  }, "結果"), React.createElement("span", {
-    style: {
-      whiteSpace: "pre-wrap",
-      lineHeight: 1.8
-    }
-  }, report.result))), React.createElement("div", {
-    className: "card"
-  }, React.createElement("div", {
-    className: "card-title"
-  }, "３．商談内容"), React.createElement("div", {
+  }, "２．商談内容"), React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start"
@@ -925,7 +868,7 @@ function Detail({
       whiteSpace: "pre-wrap",
       lineHeight: 1.8
     }
-  }, report.issues))), (report.achievements || report.nextAction || report.nextVisitDate) && React.createElement("div", {
+  }, report.issues))), React.createElement("div", {
     className: "card",
     style: {
       background: "#e6f1fb",
@@ -937,7 +880,7 @@ function Detail({
       color: "#185fa5",
       borderBottomColor: "#cfdfee"
     }
-  }, "４．本日の成果・今後の対応"), report.achievements && React.createElement("div", {
+  }, "３．本日の成果・今後の対応"), report.achievements && React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start",
@@ -953,7 +896,7 @@ function Detail({
       whiteSpace: "pre-wrap",
       lineHeight: 1.8
     }
-  }, report.achievements)), report.nextAction && React.createElement("div", {
+  }, report.achievements)), React.createElement("div", {
     className: "row",
     style: {
       alignItems: "start",
@@ -987,7 +930,7 @@ function Detail({
     className: "card"
   }, React.createElement("div", {
     className: "card-title"
-  }, "５．競合・市場情報"), React.createElement("div", {
+  }, "４．競合・市場情報・その他共有事項"), React.createElement("div", {
     style: {
       whiteSpace: "pre-wrap",
       lineHeight: 1.8,
@@ -1021,7 +964,7 @@ function List({
       if (dateTo && r.visitDate > dateTo) return false;
       if (search.trim()) {
         const q = search.toLowerCase();
-        const hay = [r.company, r.author, r.contactNames, r.content, r.activitySummary, r.result, r.customerReaction, r.achievements, r.nextAction, r.marketInfo, r.visitPlace].filter(Boolean).join(" ").toLowerCase();
+        const hay = [r.company, r.author, r.contactNames, r.content, r.customerReaction, r.achievements, r.nextAction, r.marketInfo, r.visitPlace].filter(Boolean).join(" ").toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -1130,7 +1073,7 @@ function List({
     }
   }, reports.length === 0 ? "報告書がありません。「新規報告」から作成してください。" : "検索条件に該当する報告書がありません。") : filtered.map(r => {
     const timeStr = [r.visitTimeFrom, r.visitTimeTo].filter(Boolean).join("～");
-    const summary = r.activitySummary || r.content || "";
+    const summary = r.content || "";
     return React.createElement("div", {
       key: r.id,
       className: "list-item",
@@ -1191,10 +1134,10 @@ function List({
   }));
 }
 function exportCSV(reports) {
-  const headers = ["作成日", "訪問日", "訪問時間", "商談形態", "場所詳細", "作成者", "作成者メール", "訪問先会社名", "担当者名", "同行者", "温度感", "活動内容", "結果", "商談内容", "お客様の反応", "課題・懸念事項", "本日の成果", "次回アクション", "次回訪問予定日", "競合・市場情報", "提出日時"];
+  const headers = ["作成日", "訪問日", "訪問時間", "商談形態", "場所詳細", "作成者", "作成者メール", "訪問先会社名", "担当者名", "同行者", "温度感", "商談内容", "お客様の反応", "課題・懸念事項", "本日の成果", "次回アクション", "次回訪問予定日", "共有事項", "提出日時"];
   const rows = reports.map(r => {
     const timeStr = [r.visitTimeFrom, r.visitTimeTo].filter(Boolean).join("～");
-    return [r.createdDate || "", r.visitDate || "", timeStr, r.meetingType || "", r.visitPlace || "", r.author || "", r.authorEmail || "", r.company || "", (r.contactNames || "").replace(/\n/g, " / "), r.companions || "", r.temperature || "", (r.activitySummary || "").replace(/\n/g, " "), (r.result || "").replace(/\n/g, " "), (r.content || "").replace(/\n/g, " "), (r.customerReaction || "").replace(/\n/g, " "), (r.issues || "").replace(/\n/g, " "), (r.achievements || "").replace(/\n/g, " "), (r.nextAction || "").replace(/\n/g, " "), r.nextVisitDate || "", (r.marketInfo || "").replace(/\n/g, " "), (r.submittedAt || "").split("T")[0]].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",");
+    return [r.createdDate || "", r.visitDate || "", timeStr, r.meetingType || "", r.visitPlace || "", r.author || "", r.authorEmail || "", r.company || "", (r.contactNames || "").replace(/\n/g, " / "), r.companions || "", r.temperature || "", (r.content || "").replace(/\n/g, " "), (r.customerReaction || "").replace(/\n/g, " "), (r.issues || "").replace(/\n/g, " "), (r.achievements || "").replace(/\n/g, " "), (r.nextAction || "").replace(/\n/g, " "), r.nextVisitDate || "", (r.marketInfo || "").replace(/\n/g, " "), (r.submittedAt || "").split("T")[0]].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",");
   });
   const csv = "\uFEFF" + [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csv], {
@@ -1210,7 +1153,7 @@ function exportCSV(reports) {
   URL.revokeObjectURL(url);
 }
 function App() {
-  if (!SHARED_BIN_ID || SHARED_BIN_ID === "REPLACE_BIN_ID") {
+  if (!SHARED_BIN_ID || SHARED_BIN_ID === "6a4cf5d6f5f4af5e296c27fe") {
     return React.createElement(SetupScreen, null);
   }
   const [view, setView] = useState("list");
